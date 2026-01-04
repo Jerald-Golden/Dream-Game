@@ -1,0 +1,31 @@
+# Render Configuration for Dream Game Server
+# This file allows you to deploy via "Infrastructure as Code"
+# You can also configure manually through the Render dashboard
+
+services:
+    - type: web
+      name: dream-game-server
+      runtime: node
+      # Render will auto-detect the root directory if your repo structure is clear
+      # If needed, you can specify: rootDir: Dream-Server
+      buildCommand: npm install && npm run build
+      startCommand: node build/index.js
+      plan: free
+      region: oregon # Change to your preferred region: oregon, frankfurt, singapore, etc.
+
+      # Environment variables
+      envVars:
+          - key: NODE_ENV
+            value: production
+          - key: PORT
+            value: 2567
+          - key: ALLOWED_ORIGINS
+            # You'll need to update this after deploying the client
+            value: http://localhost:3000
+
+      # Health check endpoint (optional)
+      healthCheckPath: /
+
+      # Auto-deploy settings
+      autoDeploy: true
+      branch: main

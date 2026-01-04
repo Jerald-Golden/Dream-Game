@@ -1,0 +1,69 @@
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import Game from "@features/games/among-us/game/game";
+import Preloader from "@components/loading/preLoader";
+import UI from "@components/ui/ui";
+
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import SocketLayout from "./components/auth/SocketLayout";
+import Login from "./components/pages/Login";
+import Home from "./components/pages/Home";
+import LobbyDashboard from "./components/pages/LobbyDashBoard";
+import Lobby from "./components/pages/Lobby";
+import Settings from "./components/pages/Settings";
+import NotFound from "./components/pages/NotFound";
+import { AuthProvider } from "./contexts/AuthContext";
+import { RoomProvider } from "@features/games/among-us/multiplayer/roomContext";
+
+// Wrapper for the actual game
+const GameWrapper: React.FC = () => {
+    return (
+        <>
+            <Preloader />
+            <UI />
+            <Game />
+        </>
+    );
+};
+
+const App: React.FC = () => {
+    return (
+        <BrowserRouter>
+            <AuthProvider>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+
+                    <Route
+                        path="/"
+                        element={
+                            <ProtectedRoute>
+                                <SocketLayout />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route index element={<Home />} />
+                        <Route path="lobbies" element={<LobbyDashboard />} />
+                        <Route path="lobby/:lobbyName" element={<Lobby />} />
+                        <Route path="settings" element={<Settings />} />
+
+                        {/* Game Room Route */}
+                        <Route
+                            path="room/:roomName"
+                            element={
+                                <RoomProvider>
+                                    <GameWrapper />
+                                </RoomProvider>
+                            }
+                        />
+                    </Route>
+
+                    <Route path="/not-found" element={<NotFound />} />
+                    <Route path="*" element={<Navigate to="/not-found" />} />
+                </Routes>
+            </AuthProvider>
+        </BrowserRouter>
+    );
+};
+
+export default App;

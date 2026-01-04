@@ -1,0 +1,136 @@
+.quick-actions-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-overlay);
+    backdrop-filter: blur(8px);
+}
+
+.quick-actions-container {
+    position: relative;
+    animation: quickActionsIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.quick-actions-list {
+    background: var(--bg-container);
+    border-radius: 16px;
+    border: 2px solid var(--border-shortcut-selected);
+    padding: 8px;
+    min-width: 320px;
+    filter: drop-shadow(0 12px 20px var(--shadow-drop));
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease-out;
+    cursor: pointer;
+    gap: 12px;
+    background: var(--bg-item);
+}
+
+.action-item.selected {
+    background: var(--bg-item-selected);
+    border: 1px solid var(--border-item);
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 8px var(--shadow-glow));
+}
+
+.action-icon {
+    font-size: 24px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-icon);
+    border-radius: 8px;
+    transition: all 0.2s ease-out;
+}
+
+.action-item.selected .action-icon {
+    background: var(--bg-icon-selected);
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 6px var(--shadow-glow));
+}
+
+.action-content {
+    flex: 1;
+}
+
+.action-label {
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    font-family: "Orbitron", monospace;
+    transition: all 0.2s ease-out;
+}
+
+.action-item.selected .action-label {
+    color: var(--text-selected);
+    filter: drop-shadow(0 0 6px var(--shadow-glow));
+}
+
+.action-description {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-family: "Orbitron", monospace;
+}
+
+.action-shortcut {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-family: "Orbitron", monospace;
+    background: var(--bg-shortcut);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-shortcut);
+    transition: all 0.2s ease-out;
+}
+
+.action-item.selected .action-shortcut {
+    color: var(--text-selected);
+    border-color: var(--border-shortcut-selected);
+    background: var(--bg-shortcut-selected);
+    filter: drop-shadow(0 0 6px var(--shadow-glow));
+}
+
+.quick-actions-instructions {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.quick-actions-instructions-main {
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: "Orbitron", monospace;
+}
+
+.quick-actions-instructions-sub {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-family: "Orbitron", monospace;
+}
+
+@keyframes quickActionsIn {
+    0% {
+        transform: scale(0.9) translateY(-10px);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}

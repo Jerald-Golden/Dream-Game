@@ -1,0 +1,41 @@
+# Netlify Configuration for Dream Game Client
+
+[build]
+  # Base directory for the build
+  base = "Dream-Client"
+  
+  # Build command
+  command = "npm run build"
+  
+  # Publish directory (where the built files are)
+  publish = "dist"
+
+# Environment variables (these can also be set in Netlify UI)
+# [build.environment]
+#   VITE_SERVER_URL = "https://your-server.onrender.com"
+#   VITE_SOCKET_URL = "https://your-server.onrender.com"
+
+# Redirect rules for SPA (Single Page Application)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Node version
+[build.environment]
+  NODE_VERSION = "18"
