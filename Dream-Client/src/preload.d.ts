@@ -5,6 +5,7 @@ export interface IElectronAPI {
 export interface ICustomAPI {
     onUpdateProgress: (callback: (progress: any) => void) => void;
     onUpdateDownloaded: (callback: () => void) => void;
+    quitApp: () => void;
 }
 
 declare global {

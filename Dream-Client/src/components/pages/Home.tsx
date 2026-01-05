@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLobby } from "../../contexts/LobbyContext";
-import { Settings } from "lucide-react";
+import { Settings, DoorOpen } from "lucide-react";
 import useCallBackOnEscape from "src/utils/hooks/useCallBackOnEscape";
 
 type NavItem = {
@@ -21,6 +21,7 @@ function Home() {
     const [maxPlayers, setMaxPlayers] = useState(1);
     const [isPrivate, setIsPrivate] = useState(false);
     const [password, setPassword] = useState("");
+    const [showExitConfirmation, setShowExitConfirmation] = useState(false);
 
     useCallBackOnEscape(() => {
         setIsCreatingLobby(false);
@@ -138,6 +139,34 @@ function Home() {
                             </button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {showExitConfirmation && (
+                <div className="overlay">
+                    <div className="exit-modal">
+                        <h2 className="exit-title">EXIT GAME?</h2>
+                        <p className="exit-description">Are you sure you want to quit to desktop?</p>
+                        <div className="exit-actions">
+                            <button
+                                className="btn-confirm-exit"
+                                onClick={() => {
+                                    window.api?.quitApp();
+                                }}
+                            >
+                                YES, EXIT
+                            </button>
+                            <button className="btn-cancel-exit" onClick={() => setShowExitConfirmation(false)}>
+                                CANCEL
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {window.api && (
+                <div className="exit-button" onClick={() => setShowExitConfirmation(true)}>
+                    <DoorOpen size={32} strokeWidth={2.5} />
                 </div>
             )}
         </div>

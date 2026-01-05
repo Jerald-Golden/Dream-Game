@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, dialog } from "electron";
+import { app, BrowserWindow, shell, dialog, ipcMain } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import { autoUpdater } from "electron-updater";
@@ -136,6 +136,9 @@ app.whenReady().then(() => {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
+    ipcMain.on("quit-app", () => {
+        app.quit();
     });
 });
 

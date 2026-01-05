@@ -11,6 +11,7 @@ const api = {
         ipcRenderer.on("update-progress", (_, progress) => callback(progress)),
     onUpdateDownloaded: (callback: () => void) =>
         ipcRenderer.on("update-downloaded", (_, value) => callback()),
+    quitApp: () => ipcRenderer.send("quit-app"),
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to
