@@ -1,7 +1,7 @@
 import React from "react";
 import StaminaBar from "./player/staminaBar";
 import CrossHair from "./player/crosssHair";
-import { useRoom } from "@features/games/among-us/multiplayer/roomContext";
+import { useRoom } from "src/contexts/RoomContext";
 import { useNavigate } from "react-router-dom";
 
 import { useStamina } from "@core/store/store";

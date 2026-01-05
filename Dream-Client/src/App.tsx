@@ -14,7 +14,7 @@ import Lobby from "./components/pages/Lobby";
 import Settings from "./components/pages/Settings";
 import NotFound from "./components/pages/NotFound";
 import { AuthProvider } from "./contexts/AuthContext";
-import { RoomProvider } from "@features/games/among-us/multiplayer/roomContext";
+import { RoomProvider } from "src/contexts/RoomContext";
 
 // Wrapper for the actual game
 const GameWrapper: React.FC = () => {

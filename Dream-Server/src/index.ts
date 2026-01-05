@@ -12,14 +12,14 @@ import {
     LobbyPlayer,
 } from "./lobbies";
 import { rooms, createRoom, getRooms, getRoom, getRoomPlayers } from "./rooms";
+import authRouter from "./auth";
+import { supabase } from "./supabase";
 
 const app = express();
 const httpServer = createServer(app);
 
 // CORS configuration - supports both development and production
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(",")
-    : ["http://localhost:3000"];
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",") : "*"; // Default to allow all origins for Electron/Dev simplicity
 
 const io = new Server(httpServer, {
     cors: {
@@ -38,6 +38,27 @@ app.use(
     }),
 );
 app.use(express.json());
+app.use("/auth", authRouter);
+
+const authMiddleware = async (socket: Socket, next: (err?: any) => void) => {
+    const token =
+        socket.handshake.auth.token || socket.handshake.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return next(new Error("Authentication required"));
+    }
+
+    const {
+        data: { user },
+        error,
+    } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+        return next(new Error("Invalid token"));
+    }
+
+    (socket as any).user = user; // Attach user to socket
+    next();
+};
 
 app.get("/", (req, res) => {
     res.send("DreamServer (Socket.io) is running!");
@@ -46,7 +67,10 @@ app.get("/", (req, res) => {
 /* =====================
    API Namespace
    ===================== */
-io.of("/api").on("connection", (socket: Socket) => {
+const apiNamespace = io.of("/api");
+apiNamespace.use(authMiddleware);
+
+apiNamespace.on("connection", (socket: Socket) => {
     // console.log("API Socket connected:", socket.id);
 
     socket.on("getLobbies", () => {
@@ -72,7 +96,10 @@ io.of("/api").on("connection", (socket: Socket) => {
 /* =====================
    Lobby Namespace
    ===================== */
-io.of("/lobby").on("connection", (socket: Socket) => {
+const lobbyNamespace = io.of("/lobby");
+lobbyNamespace.use(authMiddleware);
+
+lobbyNamespace.on("connection", (socket: Socket) => {
     console.log("Lobby Socket connected:", socket.id);
 
     // Reconnection logic
@@ -376,7 +403,10 @@ io.of("/lobby").on("connection", (socket: Socket) => {
 /* =====================
    Room Namespace
    ===================== */
-io.of("/room").on("connection", (socket: Socket) => {
+const roomNamespace = io.of("/room");
+roomNamespace.use(authMiddleware);
+
+roomNamespace.on("connection", (socket: Socket) => {
     console.log("Room Socket connected:", socket.id);
 
     socket.on("joinRoom", ({ roomName, userId, username }) => {

@@ -4,7 +4,7 @@ import { RigidBody, RapierRigidBody, CapsuleCollider } from "@react-three/rapier
 import { useFrame, useThree } from "@react-three/fiber";
 import { usePlayerControls } from "@core/utils/helpers";
 import CharacterModel from "@features/games/among-us/player/character";
-import { useRoom } from "@features/games/among-us/multiplayer/roomContext";
+import { useRoom } from "src/contexts/RoomContext";
 import { useStamina } from "@core/store/store";
 
 interface PlayerProps {

@@ -1,24 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, useRef, ReactNode } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { useAuth } from "../../../../contexts/AuthContext";
-
-interface PlayerState {
-    id: string; // socketId or userId
-    userId: string;
-    username: string;
-    position: { x: number; y: number; z: number };
-    rotation: { x: number; y: number; z: number };
-    state: string;
-}
-
-interface RoomContextType {
-    roomName: string | null;
-    players: PlayerState[];
-    loading: boolean;
-    sendMove: (position: { x: number; y: number; z: number }, rotation: { x: number; y: number; z: number }, state: string) => void;
-    socket: Socket | null;
-}
+import { useAuth } from "./AuthContext";
+import { PlayerState, RoomContextType } from "../features/games/among-us/multiplayer/types";
 
 const RoomContext = createContext<RoomContextType | undefined>(undefined);
 
@@ -34,7 +18,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
     const socketUrl = `${import.meta.env.VITE_DREAMSERVER_URL}/room`;
     // We expect the URL to be /room/:roomName
     const { roomName } = useParams<{ roomName: string }>();
-    const { user } = useAuth();
+    const { user, session } = useAuth();
     const navigate = useNavigate();
     const socketRef = useRef<Socket | null>(null);
 
@@ -42,12 +26,15 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!roomName || !user) return;
+        if (!roomName || !user || !session?.access_token) return;
 
         const socket: Socket = io(socketUrl, {
             reconnection: true,
             reconnectionAttempts: Infinity,
             reconnectionDelay: 1000,
+            auth: {
+                token: session.access_token,
+            },
         });
         socketRef.current = socket;
 
@@ -91,7 +78,7 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
             socket.off("disconnect", handleDisconnect);
             socket.disconnect();
         };
-    }, [socketUrl, roomName, user]);
+    }, [socketUrl, roomName, user, session?.access_token]);
 
     const sendMove = (position: { x: number; y: number; z: number }, rotation: { x: number; y: number; z: number }, state: string) => {
         if (socketRef.current && roomName) {

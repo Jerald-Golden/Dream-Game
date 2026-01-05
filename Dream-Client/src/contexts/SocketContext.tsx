@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from "react";
+import { useAuth } from "./AuthContext";
 import { io, Socket } from "socket.io-client";
 import { Lobby, Room, LobbyPlayer, RoomPlayer } from "../types/socketTypes";
 
@@ -23,6 +24,7 @@ const SocketContext = createContext<SocketContextType>({
 });
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
+    const { session } = useAuth();
     // Determine Socket URL. If VITE_DREAMSERVER_URL is not set (because of restricted env access), fallback to localhost
     const socketUrl = `${import.meta.env.VITE_DREAMSERVER_URL}/api`;
     const [socket, setSocket] = useState<Socket | null>(null);
@@ -31,10 +33,15 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!session?.access_token) return;
+
         const socket: Socket = io(socketUrl, {
             reconnection: true,
             reconnectionAttempts: Infinity,
             reconnectionDelay: 1000,
+            auth: {
+                token: session.access_token,
+            },
         });
 
         setSocket(socket);
@@ -87,8 +94,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
             setLoading(true);
         });
 
-        socket.on("connect_error", () => {
-            console.error("Socket connection error");
+        socket.on("connect_error", (err) => {
+            console.error("Socket connection error:", err.message);
             setLoading(true);
         });
 
@@ -100,7 +107,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
             socket.off("roomPlayersList", handleRoomPlayersList);
             socket.disconnect();
         };
-    }, [socketUrl]);
+    }, [socketUrl, session?.access_token]);
 
     // Expose functions to request updates
     const getLobbies = () => socket?.emit("getLobbies");

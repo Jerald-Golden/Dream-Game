@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
-import { supabase } from "../utils/functions/supabase";
+
+const SERVER_URL = import.meta.env.VITE_DREAMSERVER_URL;
 
 interface AuthContextType {
     user: User | null;
@@ -32,56 +33,102 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session);
-            setUser(session?.user ?? null);
-            setLoading(false);
-        });
+        const checkSession = async () => {
+            const token = localStorage.getItem("dream_access_token");
+            if (!token) {
+                setLoading(false);
+                return;
+            }
 
-        const {
-            data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, session) => {
-            setSession(session);
-            setUser(session?.user ?? null);
-            setLoading(false);
-        });
+            try {
+                const res = await fetch(`${SERVER_URL}/auth/me`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
-        return () => subscription.unsubscribe();
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.user) {
+                        setUser(data.user);
+                        setSession({ access_token: token, user: data.user } as Session);
+                    } else {
+                        throw new Error("Invalid session");
+                    }
+                } else {
+                    throw new Error("Session check failed");
+                }
+            } catch (error) {
+                console.error("Session verification failed:", error);
+                localStorage.removeItem("dream_access_token");
+                setUser(null);
+                setSession(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkSession();
     }, []);
 
     const signInWithEmail = async (email: string, password: string) => {
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
+        const res = await fetch(`${SERVER_URL}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
         });
-        if (error) throw error;
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Login failed");
+
+        if (data.session) {
+            localStorage.setItem("dream_access_token", data.session.access_token);
+            setSession(data.session);
+            setUser(data.session.user);
+        }
     };
 
     const signUpWithEmail = async (email: string, password: string, name: string) => {
-        const { error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                data: {
-                    full_name: name,
-                },
-            },
+        const res = await fetch(`${SERVER_URL}/auth/signup`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password, name }),
         });
-        if (error) throw error;
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Signup failed");
+
+        if (data.session) {
+            localStorage.setItem("dream_access_token", data.session.access_token);
+            setSession(data.session);
+            setUser(data.session.user);
+        }
     };
 
     const signOut = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) throw error;
+        const token = localStorage.getItem("dream_access_token");
+        if (token) {
+            try {
+                await fetch(`${SERVER_URL}/auth/logout`, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        }
+
+        localStorage.removeItem("dream_access_token");
+        setUser(null);
+        setSession(null);
     };
 
     const updateProfile = async (data: { full_name?: string }) => {
-        if (!user) throw new Error("No user logged in");
-
-        const { error } = await supabase.auth.updateUser({
-            data: data,
-        });
-        if (error) throw error;
+        // Not implemented on server yet, can add endpoint later.
+        console.warn("updateProfile: Not implemented on server side yet.");
+        // For now, minimal support or error
     };
 
     const value = {

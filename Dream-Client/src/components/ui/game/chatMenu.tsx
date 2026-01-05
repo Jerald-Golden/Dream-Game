@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useRoom } from "@features/games/among-us/multiplayer/roomContext";
+import { useRoom } from "src/contexts/RoomContext";
 import { useAuth } from "../../../contexts/AuthContext";
 
 interface Message {

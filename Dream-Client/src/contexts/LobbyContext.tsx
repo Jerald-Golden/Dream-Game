@@ -65,7 +65,7 @@ export const LobbyProvider = ({ children }: { children: ReactNode }) => {
     // Determine Socket URL. If VITE_DREAMSERVER_URL is not set, fallback.
     const socketUrl = `${import.meta.env.VITE_DREAMSERVER_URL}/lobby`;
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, session } = useAuth();
     const { lobbyName: lobbyNameInUrl } = useParams();
     const socketRef = useRef<Socket | null>(null);
     const [lobbyName, setLobbyName] = useState<string | null>(null);
@@ -82,10 +82,15 @@ export const LobbyProvider = ({ children }: { children: ReactNode }) => {
     const [attemptedReconnect, setAttemptedReconnect] = useState(false);
 
     useEffect(() => {
+        if (!session?.access_token) return;
+
         const socket: Socket = io(socketUrl, {
             reconnection: true,
             reconnectionAttempts: Infinity,
             reconnectionDelay: 1000,
+            auth: {
+                token: session.access_token,
+            },
         });
 
         socketRef.current = socket;
@@ -97,7 +102,7 @@ export const LobbyProvider = ({ children }: { children: ReactNode }) => {
                 socketRef.current = null;
             }
         };
-    }, [socketUrl]);
+    }, [socketUrl, session?.access_token]);
 
     useEffect(() => {
         const socket = socketRef.current;
