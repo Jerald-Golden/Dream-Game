@@ -1,6 +1,8 @@
-import { app, BrowserWindow, shell } from "electron";
+import { app, BrowserWindow, shell, dialog } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+import { autoUpdater } from "electron-updater";
+import log from "electron-log";
 
 function createWindow(): void {
     // Create the browser window.
@@ -60,6 +62,54 @@ app.whenReady().then(() => {
     });
 
     createWindow();
+
+    // Auto Updater Logic
+    if (!is.dev) {
+        autoUpdater.autoDownload = false;
+        autoUpdater.logger = log;
+        log.transports.file.level = "info";
+        log.info("App starting...");
+
+        autoUpdater.on("update-available", () => {
+            dialog
+                .showMessageBox({
+                    type: "info",
+                    title: "Update Available",
+                    message:
+                        "A new version is available. Do you want to download and install it now?",
+                    buttons: ["Update", "Exit"],
+                    defaultId: 0,
+                    cancelId: 1,
+                })
+                .then((result) => {
+                    if (result.response === 0) {
+                        autoUpdater.downloadUpdate();
+                    } else {
+                        app.quit();
+                    }
+                });
+        });
+
+        autoUpdater.on("update-downloaded", () => {
+            dialog
+                .showMessageBox({
+                    type: "info",
+                    title: "Update Ready",
+                    message:
+                        "The update has been downloaded. The application will now restart to install updates.",
+                    buttons: ["Restart"],
+                })
+                .then(() => {
+                    autoUpdater.quitAndInstall();
+                });
+        });
+
+        autoUpdater.on("error", (err) => {
+            log.error("AutoUpdater Error:", err);
+        });
+
+        autoUpdater.checkForUpdates();
+    }
 
     app.on("activate", function () {
         // On macOS it's common to re-create a window in the app when the
