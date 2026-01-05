@@ -54,7 +54,7 @@
   },
   "build": {
     "appId": "com.dreamgame.app",
-    "productName": "Dream Game",
+    "productName": "Dream-Game",
     "directories": {
       "output": "release/${version}"
     },
@@ -63,25 +63,51 @@
     ],
     "win": {
       "target": [
-        "nsis"
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
       "signAndEditExecutable": false,
-      "forceCodeSigning": false
+      "forceCodeSigning": false,
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "icon": "build/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Dream Game",
+      "runAfterFinish": true,
+      "installerIcon": "build/icons/icon.ico",
+      "uninstallerIcon": "build/icons/icon.ico",
+      "installerHeader": "build/icons/icon.ico",
+      "installerHeaderIcon": "build/icons/icon.ico",
+      "include": "build/installer.nsh",
+      "deleteAppDataOnUninstall": false,
+      "differentialPackage": true
     },
     "mac": {
       "target": [
         "dmg"
-      ]
+      ],
+      "artifactName": "${productName}-Setup-${version}.${ext}"
     },
     "linux": {
       "target": [
         "AppImage"
-      ]
+      ],
+      "artifactName": "${productName}-Setup-${version}.${ext}"
     },
     "publish": [
       {
         "provider": "github",
-        "owner": "jeral-golden",
+        "owner": "Jerald-Golden",
         "repo": "Dream-Game"
       }
     ]

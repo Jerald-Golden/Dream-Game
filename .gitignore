@@ -4,6 +4,7 @@ node_modules/
 dist/
 build/
 !build/icons/
+!Dream-Client/build/installer.nsh
 out/
 release/
 .DS_Store

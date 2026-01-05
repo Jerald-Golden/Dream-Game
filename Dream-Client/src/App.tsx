@@ -5,6 +5,7 @@ import Game from "@features/games/among-us/game/game";
 import Preloader from "@components/loading/preLoader";
 import UI from "@components/ui/ui";
 
+import UpdateLoader from "@components/loading/UpdateLoader";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import SocketLayout from "./components/auth/SocketLayout";
 import Login from "./components/pages/Login";
@@ -30,6 +31,7 @@ const GameWrapper: React.FC = () => {
 const App: React.FC = () => {
     return (
         <HashRouter>
+            <UpdateLoader />
             <AuthProvider>
                 <Routes>
                     <Route path="/login" element={<Login />} />
@@ -57,6 +59,7 @@ const App: React.FC = () => {
                             }
                         />
                     </Route>
+
 
                     <Route path="/not-found" element={<NotFound />} />
                     <Route path="*" element={<Navigate to="/not-found" />} />

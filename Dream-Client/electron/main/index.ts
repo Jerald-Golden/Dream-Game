@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import { autoUpdater } from "electron-updater";
 import log from "electron-log";
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
         width: 1200,
@@ -45,6 +45,8 @@ function createWindow(): void {
     } else {
         mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
     }
+
+    return mainWindow;
 }
 
 // This method will be called when Electron has finished
@@ -61,7 +63,7 @@ app.whenReady().then(() => {
         optimizer.watchWindowShortcuts(window);
     });
 
-    createWindow();
+    const mainWindow = createWindow();
 
     // Auto Updater Logic
     if (!is.dev) {
@@ -69,6 +71,11 @@ app.whenReady().then(() => {
         autoUpdater.logger = log;
         log.transports.file.level = "info";
         log.info("App starting...");
+
+        autoUpdater.on("download-progress", (progressObj) => {
+            log.info("Download Progress:", progressObj);
+            mainWindow.webContents.send("update-progress", progressObj);
+        });
 
         autoUpdater.on("update-available", () => {
             dialog
@@ -91,6 +98,8 @@ app.whenReady().then(() => {
         });
 
         autoUpdater.on("update-downloaded", () => {
+            log.info("Update downloaded, preparing to install...");
+
             dialog
                 .showMessageBox({
                     type: "info",
@@ -100,7 +109,19 @@ app.whenReady().then(() => {
                     buttons: ["Restart"],
                 })
                 .then(() => {
-                    autoUpdater.quitAndInstall();
+                    log.info("User confirmed restart, quitting application...");
+
+                    // Close all windows first
+                    BrowserWindow.getAllWindows().forEach((window) => {
+                        window.close();
+                    });
+
+                    // Wait a moment for windows to close, then quit and install
+                    setTimeout(() => {
+                        log.info("Calling quitAndInstall...");
+                        // silent = true, forceRunAfter = true
+                        autoUpdater.quitAndInstall(true, true);
+                    }, 500);
                 });
         });
 

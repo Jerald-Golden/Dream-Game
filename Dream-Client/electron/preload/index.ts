@@ -7,6 +7,10 @@ const api = {
     // For example:
     // sendMessage: (message: string) => ipcRenderer.send('message', message),
     // onMessage: (callback: (message: string) => void) => ipcRenderer.on('message', (_, message) => callback(message))
+    onUpdateProgress: (callback: (progress: any) => void) =>
+        ipcRenderer.on("update-progress", (_, progress) => callback(progress)),
+    onUpdateDownloaded: (callback: () => void) =>
+        ipcRenderer.on("update-downloaded", (_, value) => callback()),
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to
