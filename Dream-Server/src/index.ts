@@ -1,3 +1,4 @@
+import "dotenv-flow/config";
 import express from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
@@ -18,7 +19,7 @@ const httpServer = createServer(app);
 // CORS configuration - supports both development and production
 const allowedOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(",")
-    : ["http://localhost:3000", "http://localhost:5173"];
+    : ["http://localhost:3000"];
 
 const io = new Server(httpServer, {
     cors: {

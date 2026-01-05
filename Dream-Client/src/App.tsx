@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Game from "@features/games/among-us/game/game";
 import Preloader from "@components/loading/preLoader";
@@ -29,7 +29,7 @@ const GameWrapper: React.FC = () => {
 
 const App: React.FC = () => {
     return (
-        <BrowserRouter>
+        <HashRouter>
             <AuthProvider>
                 <Routes>
                     <Route path="/login" element={<Login />} />
@@ -62,7 +62,7 @@ const App: React.FC = () => {
                     <Route path="*" element={<Navigate to="/not-found" />} />
                 </Routes>
             </AuthProvider>
-        </BrowserRouter>
+        </HashRouter>
     );
 };
 
