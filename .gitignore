@@ -3,6 +3,7 @@ node_modules/
 .env.local
 dist/
 build/
+!build/icons/
 out/
 release/
 .DS_Store

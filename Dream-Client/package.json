@@ -1,6 +1,6 @@
 {
   "name": "dream-game-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A 3D Dream Game Client",
   "author": "Jerald Golden",
   "private": true,
@@ -56,7 +56,7 @@
     "appId": "com.dreamgame.app",
     "productName": "Dream Game",
     "directories": {
-      "output": "out/releases/${version}"
+      "output": "release/${version}"
     },
     "files": [
       "out/**/*"
@@ -95,6 +95,7 @@
     "cross-env": "^10.1.0",
     "electron": "^39.2.7",
     "electron-builder": "^26.0.12",
+    "electron-icon-builder": "^2.0.1",
     "electron-vite": "^5.0.0",
     "prettier": "^3.7.4",
     "ts-node": "^10.9.2",

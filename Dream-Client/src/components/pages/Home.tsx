@@ -75,7 +75,7 @@ function Home() {
                         <div className="logo-icon"></div>
                         <div className="logo-text">
                             <div className="logo-title">DREAMGAME</div>
-                            <div className="logo-version">VERSION 1.0.0</div>
+                            <div className="logo-version">VERSION 1.0.1</div>
                         </div>
                     </div>
                 </div>
