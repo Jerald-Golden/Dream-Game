@@ -73,11 +73,12 @@
       "signAndEditExecutable": false,
       "forceCodeSigning": false,
       "artifactName": "${productName}-Setup-${version}.${ext}",
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.ico",
+      "shortcutIcon": "build/icons/icon.ico"
     },
     "nsis": {
-      "oneClick": true,
-      "allowToChangeInstallationDirectory": false,
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
       "perMachine": false,
       "allowElevation": true,
       "createDesktopShortcut": true,
