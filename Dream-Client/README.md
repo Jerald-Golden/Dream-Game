@@ -1,6 +1,6 @@
 # Dream Game - Client
 
-The client application for Dream Game, built with React, TypeScript, and Vite.
+The client application for Dream Game, built with React, TypeScript, and Vite. Now also comes in desktop flavor thanks to Electron! ⚡
 
 ## 🚀 Quick Start
 
@@ -19,56 +19,68 @@ The app will open at `http://localhost:3000`
 
 ## 📦 Scripts
 
-- `npm run dev` - Start development server with HMR
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run format` - Format code with Prettier
+### Web App (Browser Mode)
+
+- `npm run dev` - Start development server with HMR (watch those modules reload!)
+- `npm run build` - Build for production (minified and optimized 🚀)
+- `npm run preview` - Preview production build (test before you deploy!)
+- `npm run format` - Format code with Prettier (because messy code is sad code)
+
+### Desktop App (Electron Mode)
+
+- `npm run electron:dev` - Start Electron app in development mode
+- `npm run electron:build` - Build Electron app for your current platform
+- `npm run electron:build:win` - Build for Windows
+- `npm run electron:build:mac` - Build for macOS
+- `npm run electron:build:linux` - Build for Linux
+- `npm run electron:preview` - Preview Electron production build
 
 ## 🛠️ Tech Stack
 
-- **React 18.2** - UI framework
-- **TypeScript** - Type safety
-- **Vite 7.3** - Build tool and dev server
-- **Three.js** - 3D graphics
-- **React Three Fiber** - React renderer for Three.js
-- **React Three Rapier** - Physics engine
-- **Socket.io Client** - Real-time communication
-- **Zustand** - State management
-- **React Router DOM** - Routing
-- **Radix UI** - Accessible UI components
-- **Tailwind CSS** - Utility-first CSS
+- **React 18.2** - UI framework (hooks for days)
+- **TypeScript** - Type safety (goodbye random runtime errors!)
+- **Vite 7.3** - Build tool and dev server (so fast it's unfair)
+- **Electron.js** - Desktop app framework (native feels)
+- **Three.js** - 3D graphics (making cubes look cool since forever)
+- **React Three Fiber** - React renderer for Three.js (JSX goes 3D!)
+- **React Three Rapier** - Physics engine (gravity is a thing)
+- **Socket.io Client** - Real-time communication (WebSockets but easier)
+- **Zustand** - State management (Redux's chill younger sibling)
+- **React Router DOM** - Routing (SPA navigation magic)
+- **Radix UI** - Accessible UI components (a11y ftw)
+- **Tailwind CSS** - Utility-first CSS (classes go brrrr)
 
 ## 📁 Project Structure
 
 ```
 src/
-├── assets/          # Game assets (models, textures, styles)
-│   ├── glts/        # 3D models
-│   ├── images/      # Images
-│   └── styles/      # CSS files
-├── components/      # React components
-│   ├── auth/        # Authentication components
-│   ├── loading/     # Loading screens
-│   ├── pages/       # Page components
-│   └── ui/          # Reusable UI components
-├── contexts/        # React contexts
+├── assets/          # Game assets (the pretty stuff)
+│   ├── glts/        # 3D models (don't touch my polygons)
+│   ├── images/      # Images (memes go here... kidding)
+│   └── styles/      # CSS files (painting the walls)
+├── components/      # React components (Legos of the web)
+│   ├── auth/        # Authentication components (the bouncer)
+│   ├── loading/     # Loading screens (please wait...)
+│   ├── pages/       # Page components (the big views)
+│   └── ui/          # Reusable UI components (copy-paste heroes)
+├── contexts/        # React contexts (state management black magic)
 │   ├── AuthContext.tsx
 │   ├── LobbyContext.tsx
 │   ├── PlayerContext.tsx
 │   └── SocketContext.tsx
-├── core/            # Core game logic
-│   ├── store/       # Zustand stores
-│   ├── types/       # Core types
-│   └── utils/       # Core utilities
-├── features/        # Feature modules
+├── core/            # Core game logic (the brain)
+│   ├── store/       # Zustand stores (state of mind)
+│   ├── types/       # Core types (making TS happy)
+│   └── utils/       # Core utilities (helper gnomes)
+├── features/        # Feature modules (the meat and potatoes)
 │   └── games/       # Game implementations
-│       └── among-us/
-├── types/           # TypeScript type definitions
-├── utils/           # Utility functions
+│       └── among-us/ # (sus)
+├── types/           # TypeScript type definitions (interface chaos)
+├── utils/           # Utility functions (random stuff that works)
 │   ├── functions/   # Helper functions
 │   └── hooks/       # Custom React hooks
-├── App.tsx          # Main app component
-└── index.tsx        # Entry point
+├── App.tsx          # Main app component (the root of all evil)
+└── index.tsx        # Entry point (start here)
 ```
 
 ## 🔧 Configuration
@@ -113,34 +125,34 @@ Key configurations in `vite.config.ts`:
 
 ### Authentication
 
-- User login/registration
-- Protected routes
-- Session management
+- User login/registration (who are you again?)
+- Protected routes (VIP access only 🚫)
+- Session management (because logging in every 5 seconds is annoying)
 
 ### Lobby System
 
-- Create lobbies with custom settings
-- Join public/private lobbies
-- Real-time player list updates
-- Admin controls (kick, start game)
-- Ready/unready system
-- Game countdown timer
+- Create lobbies with custom settings (your house, your rules)
+- Join public/private lobbies (party crashers welcome if public)
+- Real-time player list updates (stalk your friends in real-time)
+- Admin controls (kick that annoying player... we won't judge)
+- Ready/unready system (are we there yet?)
+- Game countdown timer (the final countdown!)
 
 ### Chat System
 
-- Real-time messaging
-- Auto-scroll to latest messages
-- Custom scrollbar styling
-- Username display
+- Real-time messaging (slide into the global chat)
+- Auto-scroll to latest messages (no manual scrolling, we got you)
+- Custom scrollbar styling (because default scrollbars are ugly)
+- Username display (so you know who to blame)
 
 ### 3D Game
 
-- First-person and third-person controls
-- Physics-based movement
-- Stamina system
-- Minimap
-- Character models
-- Map with collision detection
+- First-person and third-person controls (choose your perspective)
+- Physics-based movement (try not to trip)
+- Stamina system (cardio is important)
+- Minimap (for when you inevitably get lost)
+- Character models (looking sharp!)
+- Map with collision detection (no walking through walls... usually)
 
 ## 🔌 API Integration
 
@@ -193,7 +205,7 @@ Run `npm run format` to format all files.
 
 ### Port Already in Use
 
-If port 3000 is in use, modify `vite.config.ts`:
+If port 3000 is in use (probably some old dev server you forgot about), modify `vite.config.ts`:
 
 ```typescript
 server: {
@@ -203,11 +215,11 @@ server: {
 
 ### 3D Models Not Loading
 
-Ensure `.glb` files are in `src/assets/glts/` and properly imported.
+Ensure `.glb` files are in `src/assets/glts/` and properly imported. (Did you remember to commit them? 👀)
 
 ### Socket Connection Issues
 
-Verify `VITE_SERVER_URL` and `VITE_SOCKET_URL` in `.env` match your server configuration.
+Verify `VITE_SERVER_URL` and `VITE_SOCKET_URL` in `.env` match your server configuration. When in doubt, check the console – it never lies!
 
 ## 📚 Learn More
 
